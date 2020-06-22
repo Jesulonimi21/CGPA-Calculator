@@ -1,3 +1,9 @@
+
+// MY OBSERVATIONS
+// The way you are calculating the points is wrong, i have fixed the first if statement for you
+// fix the rest by yourself
+
+let presentInpuField=0;
 let isOpen=false;
 function toggleNavBar(){
     console.log("clicked");
@@ -17,21 +23,44 @@ document.getElementById("about").addEventListener("click",toggleNavBar);
 document.getElementById("settings").addEventListener("click",toggleNavBar);
 
 
-document.getElementById("enter-btn").addEventListener('click',function(){
+document.getElementById("enter-btn").addEventListener('click',function(event){
+    //The page reloads because the button is inside a form thats why the value in the input field dissapears
+    // The code in the next line  stops the page from reloading.
+    event.preventDefault();
+    
     let courseCode=document.getElementById("course").value; 
     let courseUnit=document.getElementById("unit").value;
     let courseScore=document.getElementById("score").value; 
-   
+
+    // i used .trim() to remove empty spaces at the front and the back of the string so something like "  " will not be accepted
+    if(courseUnit.trim()==""||courseCode.trim()==""||courseScore.trim()==""){
+        prompt("Please fill out all the fields");
+        return;
+    }
+
     receiveScoreValues(courseCode,courseUnit,courseScore);
     getGrade(courseScore);
+
+  
 });
 
  function receiveScoreValues(courseCode,courseUnit,courseScore){
- document.getElementById("course1").value= courseCode;  
- document.getElementById("unit1").value= courseUnit;  
- document.getElementById("score1").value= courseScore;  
- document.getElementById("grade1").value= getGrade(courseScore);
- document.getElementById("points1").value= getPoints(courseScore);
+       // i increment the value of presentInpuField
+    ++presentInpuField
+     // by doing this, we can dynamcally populate each input field after the prevous input field is clicked
+     // since we are appending the value of presentInpuField which increases everytime the enter button is clicked
+     //to "course", unit and the likes
+     let courseId="course"+presentInpuField;
+     let unitId="unit"+presentInpuField;
+     let scoreId="score"+presentInpuField;
+     let gradeId="grade"+presentInpuField;
+     let pointsId="points"+presentInpuField;
+
+ document.getElementById(courseId).value= courseCode;  
+ document.getElementById(unitId).value= courseUnit;  
+ document.getElementById(scoreId).value= courseScore;  
+ document.getElementById(gradeId).value= getGrade(courseScore);
+ document.getElementById(pointsId).value= getPoints(courseScore,courseUnit);
  }
  function getGrade(courseScore)
  {
@@ -71,10 +100,10 @@ function getPointsMark(courseScore)
    }
     
  }
- function getPoints(courseScore)
+ function getPoints(courseScore,courseUnit)
  {
-    if(courseScore>=70 || ("courseUnit = 5")){
-        return "25";
+    if(courseScore>=70){
+        return 5*courseUnit;
     }
     if(courseScore>=70 || ("courseUnit = 4")){
         return "20";
